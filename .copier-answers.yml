@@ -1,0 +1,19 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v4.2.4
+_src_path: https://github.com/jupyterlab/extension-template
+author_email: 530059237@qq.com
+author_name: Sunday Lau
+data_format: string
+file_extension: ''
+has_binder: true
+has_settings: true
+kind: frontend
+labextension_name: extension_TSAssistant
+mimetype: ''
+mimetype_name: ''
+project_short_description: A JupyterLab extension.
+python_name: extension_TSAssistant
+repository: ''
+test: true
+viewer_name: ''
+
