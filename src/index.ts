@@ -6,8 +6,6 @@ import {
 import { ICommandPalette } from '@jupyterlab/apputils';
 import { createCustomWidget } from './customWidget';
 import { DockPanel } from '@lumino/widgets';
-// import template from './template/index.html'
-
 /**
  * Initialization data for the jupyterlab-TSAssistant-panel extension.
  */
@@ -24,21 +22,16 @@ const plugin: JupyterFrontEndPlugin<void> = {
   activate: (app: JupyterFrontEnd, palette: ICommandPalette) => {
     // 在控制台输出插件已被激活的消息
     console.log('JupyterLab extension jupyterlab-TSAssistant-panel is activated!');
-
     // 创建 DockPanel 实例
     const dockPanel = new DockPanel();
     // 设置 DockPanel 的 ID
     dockPanel.id = 'custom-panel';
-
-    // 将 HTML 模板传递给小部件创建函数
+    // create a widget
     const widget = createCustomWidget();
-
     // 将小部件添加到 DockPanel 中
     dockPanel.addWidget(widget);
-
     // 将 DockPanel 添加到 JupyterLab 的主工作区右侧
-    app.shell.add(dockPanel, 'right', { rank: 100 });
-
+    app.shell.add(dockPanel, 'right', { rank: 1000 });
     // 添加一个命令来显示自定义面板
     const command: string = 'custom-panel:show';
     app.commands.addCommand(command, {
@@ -48,13 +41,12 @@ const plugin: JupyterFrontEndPlugin<void> = {
       execute: () => {
         if (!dockPanel.isAttached) {
           // 如果 DockPanel 尚未附加到主工作区，则将其附加到右侧
-          app.shell.add(dockPanel, 'right', { rank: 100 });
+          app.shell.add(dockPanel, 'right', { rank: 1000 });
         }
         // 激活 DockPanel
         app.shell.activateById(dockPanel.id);
       }
     });
-
     // 将命令添加到命令面板
     palette.addItem({ command, category: 'Custom' });
   }
