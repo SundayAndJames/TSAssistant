@@ -3,46 +3,61 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 
-import { ICommandPalette, MainAreaWidget } from '@jupyterlab/apputils';
-
-import { Widget } from '@lumino/widgets';
+import { ICommandPalette } from '@jupyterlab/apputils';
+import { createCustomWidget } from './customWidget';
+import { DockPanel } from '@lumino/widgets';
+// import template from './template/index.html'
 
 /**
- * 一个示例侧边栏插件
+ * Initialization data for the jupyterlab-TSAssistant-panel extension.
  */
-const extension: JupyterFrontEndPlugin<void> = {
-  id: 'my-sidebar-plugin',
+
+// 创建一个 JupyterLab 插件对象
+const plugin: JupyterFrontEndPlugin<void> = {
+  // 插件的唯一标识符
+  id: 'jupyterlab-TSAssistant-panel',
+  // 插件在 JupyterLab 启动时自动启动
   autoStart: true,
+  // 插件所需的其他插件
   requires: [ICommandPalette],
+  // 插件的激活函数
   activate: (app: JupyterFrontEnd, palette: ICommandPalette) => {
-    console.log('JupyterLab extension my-sidebar-plugin is activated!');
+    // 在控制台输出插件已被激活的消息
+    console.log('JupyterLab extension jupyterlab-TSAssistant-panel is activated!');
 
-    const content = new Widget();
-    const widget = new MainAreaWidget({ content });
-    widget.id = 'my-sidebar-widget';
-    widget.title.label = 'My Sidebar';
-    widget.title.closable = true;
+    // 创建 DockPanel 实例
+    const dockPanel = new DockPanel();
+    // 设置 DockPanel 的 ID
+    dockPanel.id = 'custom-panel';
 
-    // 在侧边栏中添加一些内容
-    content.node.innerHTML = `
-      <h2>My Sidebar</h2>
-      <p>This is a simple sidebar widget.</p>
-    `;
+    // 将 HTML 模板传递给小部件创建函数
+    const widget = createCustomWidget();
 
-    // 将侧边栏小部件添加到应用程序
-    app.shell.add(widget, 'left', { rank: 500 });
+    // 将小部件添加到 DockPanel 中
+    dockPanel.addWidget(widget);
 
-    // 将一个命令添加到命令面板
-    const command = 'my-sidebar:open';
+    // 将 DockPanel 添加到 JupyterLab 的主工作区右侧
+    app.shell.add(dockPanel, 'right', { rank: 100 });
+
+    // 添加一个命令来显示自定义面板
+    const command: string = 'custom-panel:show';
     app.commands.addCommand(command, {
-      label: 'Open My Sidebar',
+      // 命令的标签
+      label: 'Show Custom Panel',
+      // 命令的执行函数
       execute: () => {
-        app.shell.activateById(widget.id);
+        if (!dockPanel.isAttached) {
+          // 如果 DockPanel 尚未附加到主工作区，则将其附加到右侧
+          app.shell.add(dockPanel, 'right', { rank: 100 });
+        }
+        // 激活 DockPanel
+        app.shell.activateById(dockPanel.id);
       }
     });
 
-    palette.addItem({ command, category: 'My Sidebar' });
+    // 将命令添加到命令面板
+    palette.addItem({ command, category: 'Custom' });
   }
 };
 
-export default extension;
+export default plugin;
